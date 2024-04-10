@@ -5,32 +5,26 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.castelao.mediaflix_v4.dto.BookDto;
-import com.castelao.mediaflix_v4.dto.ClientDto;
-import com.castelao.mediaflix_v4.dto.OrderDetailDto;
 import com.castelao.mediaflix_v4.dto.OrderDto;
-import com.castelao.mediaflix_v4.entities.Book;
 import com.castelao.mediaflix_v4.entities.Order;
 import com.castelao.mediaflix_v4.entities.OrderDetail;
-import com.castelao.mediaflix_v4.entities.Product;
-import com.castelao.mediaflix_v4.mapper.BookMapper;
-import com.castelao.mediaflix_v4.mapper.ClientMapper;
 import com.castelao.mediaflix_v4.mapper.OrderDetailMapper;
 import com.castelao.mediaflix_v4.mapper.OrderMapper;
-import com.castelao.mediaflix_v4.mapper.ProductMapper;
 import com.castelao.mediaflix_v4.repository.ClientRepository;
 import com.castelao.mediaflix_v4.repository.EmployeeRepository;
 import com.castelao.mediaflix_v4.repository.OrderDetailRepository;
 import com.castelao.mediaflix_v4.repository.OrderRepository;
-import com.castelao.mediaflix_v4.repository.ProductRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -48,6 +42,8 @@ public class OrderService {
 	@Autowired
 	private EmployeeRepository employeeRepository;
 
+	@Autowired
+	private OrderDetailRepository orderDetailRepository;
 
 	private ModelMapper modelMapper = new ModelMapper();
 
@@ -57,7 +53,7 @@ public class OrderService {
 
 	@Transactional
 	public OrderDto createOrder(OrderDto orderDto) {
-		
+
 		Order order = OrderMapper.toEntity(orderDto);
 
 		Order savedOrder = orderRepository.save(order);
@@ -75,7 +71,6 @@ public class OrderService {
 		}
 	}
 
-	
 	/**
 	 * Si el id del order recibido existe, actualiza el mismo con los campos
 	 * recibidos en orderDto
@@ -84,8 +79,8 @@ public class OrderService {
 	 * 
 	 * Sino existe devuelve Optional.empty()
 	 * 
-	 * @param id              del order a buscar
-	 * @param orderDetails    objeto con todos los campos a sobreescribir en la entidad
+	 * @param id           del order a buscar
+	 * @param orderDetails objeto con todos los campos a sobreescribir en la entidad
 	 * @return Optional<OrderDto>
 	 */
 	public Optional<OrderDto> update(Long id, OrderDto orderDto) {
@@ -104,12 +99,11 @@ public class OrderService {
 			return Optional.empty();
 		}
 	}
-	
-	
+
 	public List<OrderDto> findLatestOrdersAfterDate(LocalDateTime startDate) {
 		List<OrderDto> dtos = new ArrayList<OrderDto>();
 		List<Order> orders = orderRepository.findLatestOrdersAfterDate(startDate);
-		
+
 		if (orders != null) {
 			dtos = OrderMapper.toDto(orders);
 		}
@@ -117,14 +111,34 @@ public class OrderService {
 		return dtos;
 	}
 
-	public List<OrderDto> findOrdersWithTotalGreaterThan(BigDecimal minPrice) {		
+	public List<OrderDto> findOrdersWithTotalGreaterThan(BigDecimal minPrice) {
 		List<OrderDto> dtos = new ArrayList<OrderDto>();
 		List<Order> orders = orderRepository.findOrdersWithTotalGreaterThan(minPrice);
-		
+
 		if (orders != null) {
 			dtos = OrderMapper.toDto(orders);
 		}
 
 		return dtos;
 	}
+
+	public List<OrderDto> findLatestOrdersWithDetails() {
+		Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "creationDate");
+		Page<Order> orderPage = orderRepository.findLatestOrders(pageable);
+		List<OrderDto> dtos = new ArrayList<>();
+
+		for (Order order : orderPage.getContent()) {
+			List<OrderDetail> orderDetails = orderDetailRepository.findByOrderId(order.getOrderId());
+			OrderDto dto = OrderMapper.toDto(order);
+			dto.setDetails(OrderDetailMapper.toDtoList(orderDetails));
+			dtos.add(dto);
+		}
+
+		return dtos;
+	}
+
+	public List<Order> findOrdersByDate(LocalDateTime fecha) {
+		return orderRepository.findByDate(fecha);
+	}
+
 }

@@ -89,13 +89,20 @@ public class OrderController {
 		return dtos;
 	}
 
+	@Operation(summary = "Get the latest orders")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Orders found", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class)) }) })
+	@GetMapping("/latest")
+	public List<OrderDto> findLatestOrders() {
+		return orderService.findLatestOrdersWithDetails();
+	}
+
 	@Operation(summary = "Create an order")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Order created", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class))
-            }),
-            @ApiResponse(responseCode = "403", description = "Quantity of product greater than available", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Unprocessable Entity", content = @Content)})
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "201", description = "Order created", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class)) }),
+			@ApiResponse(responseCode = "403", description = "Quantity of product greater than available", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Unprocessable Entity", content = @Content) })
 	@PostMapping("/{clientId}")
 	public ResponseEntity<OrderDto> createOrder(@PathVariable Long clientId, @RequestBody OrderDto orderDto) {
 		System.out.println("Controller: \n clientID: " + clientId + "\n" + orderDto);
@@ -136,8 +143,8 @@ public class OrderController {
 			p = productRepository.getReferenceById(o.getProductId());
 
 			p.setStock(p.getStock() - orderDetailTmp.getQuantity());
-			
-			if(p.getStock() == 0) {
+
+			if (p.getStock() == 0) {
 				p.setAvailable(false);
 			}
 
@@ -157,8 +164,7 @@ public class OrderController {
 		orderRepository.save(order);
 
 		// Verificar si la orden se creó correctamente
-		if (createdOrderDto != null)
-		{
+		if (createdOrderDto != null) {
 			// Devolver una respuesta de éxito con el DTO de la orden creada
 			return new ResponseEntity<>(createdOrderDto, HttpStatus.CREATED);
 		} else {
@@ -225,7 +231,7 @@ public class OrderController {
 	@Operation(summary = "Get all orders with %date%")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Orders found", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = OrderDto.class))) }) })
-	@GetMapping(value = "/date")
+	@GetMapping(value = "/by-date")
 	public List<OrderDto> searchByDate(@RequestParam(name = "date") LocalDateTime date) {
 		List<OrderDto> dtos = orderService.findLatestOrdersAfterDate(date);
 		List<OrderDetail> orderDetails;
@@ -240,6 +246,21 @@ public class OrderController {
 
 		return dtos;
 	}
+	
+	
+	@Operation(summary = "Get all orders by date")
+	  @ApiResponses(value = {
+	      @ApiResponse(responseCode = "200", description = "Orders found", content = {
+	          @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class))
+	      })
+	  })
+	  @GetMapping("/date")
+	  public List<OrderDto> findOrdersByDate(@RequestParam(name = "date") LocalDateTime date) {
+	    List<Order> orders = orderService.findOrdersByDate(date);
+	    List<OrderDto> dtos = OrderMapper.toDto(orders);
+	    return dtos;
+	  }
+	
 
 	@Operation(summary = "Get all orders with %minPrice%")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Orders found", content = {
