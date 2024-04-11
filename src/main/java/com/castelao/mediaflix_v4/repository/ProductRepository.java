@@ -58,6 +58,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	@Query("SELECT p FROM Product p WHERE p.title LIKE %:title%")
 	List<Product> findByTitleWithoutPagination(@Param("title") String title);	
 	
+	@Query("SELECT p FROM Product p WHERE p.stock = 0")
+	List<Product> findAllProductsZeroStock();
+	
+	@Query("SELECT p FROM Product p WHERE p.stock > 0 AND p.stock <= 5")
+	List<Product> findAllProductsStockBetween1And5();
+	
+	
 	@Query("select count(p)>0 from Product p where p.title = :title")
 	boolean existByTitle(@Param("title") String title);
 

@@ -58,6 +58,16 @@ public class ClientRestController {
 	}
 	
 	
+	@Operation(summary = "Gets lastest clients")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Clients found", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = ClientDto.class)) }) })
+	@GetMapping("/latest")
+    public ResponseEntity<List<Client>> findLatestClients() {
+        List<Client> clients = clienteService.findLatest20Clients();
+        return new ResponseEntity<>(clients, HttpStatus.OK);
+    }
+	
+	
 	@Operation(summary = "Create a client")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "201", description = "Client created", content = {

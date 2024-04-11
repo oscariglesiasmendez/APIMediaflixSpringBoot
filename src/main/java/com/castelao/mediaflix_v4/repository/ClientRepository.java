@@ -3,6 +3,7 @@ package com.castelao.mediaflix_v4.repository;
 import java.sql.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -47,5 +48,8 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Modifying
     @Query("UPDATE Client c SET c.available = true WHERE c.clientId = ?1")
     void activarCliente(Long id);
+    
+    @Query("SELECT c FROM Client c ORDER BY c.creationDate DESC")
+    List<Client> findLatestClients(Pageable pageable);
 
 }

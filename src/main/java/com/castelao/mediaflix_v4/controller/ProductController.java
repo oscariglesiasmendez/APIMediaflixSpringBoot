@@ -2,6 +2,7 @@ package com.castelao.mediaflix_v4.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
@@ -50,6 +52,24 @@ public class ProductController {
 		return productService.getAllProducts();
 	}
 
+	@Operation(summary = "Get all products without stock")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Products found", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = ProductDto.class)) }) })
+	@GetMapping("/nostock")
+	public ResponseEntity<List<Product>> findAllProductsZeroStock() {
+		List<Product> products = productService.findAllProductsZeroStock();
+		return new ResponseEntity<>(products, HttpStatus.OK);
+	}
+
+	@Operation(summary = "Get all products with stock >=1 & <=5")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Products found", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = ProductDto.class)) }) })
+	@GetMapping("/lowstock")
+	public ResponseEntity<List<Product>> findAllProductsStockBetween1And5() {
+		List<Product> products = productService.findAllProductsStockBetween1And5();
+		return new ResponseEntity<>(products, HttpStatus.OK);
+	}
+
 	@Operation(summary = "Get a product by its Id")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Product found", content = {
 			@Content(mediaType = "application/json", schema = @Schema(implementation = ProductDto.class)) }) })
@@ -62,6 +82,7 @@ public class ProductController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
+
 
 	@Operation(summary = "Get all products with mayor price than %price%")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Products found", content = {
@@ -102,7 +123,7 @@ public class ProductController {
 			@RequestParam(name = "size", defaultValue = "10") int size) {
 		return productService.searchByGenre(genre, page, size);
 	}
-	
+
 	@Operation(summary = "Get all products by %title%")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Products found", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ProductDto.class))) }) })
@@ -112,7 +133,7 @@ public class ProductController {
 			@RequestParam(name = "size", defaultValue = "10") int size) {
 		return productService.searchByTitle(title, page, size);
 	}
-	
+
 	@Operation(summary = "Get all products by %title%")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Products found", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ProductDto.class))) }) })
@@ -142,7 +163,7 @@ public class ProductController {
 	@Operation(summary = "Deactivate a product by its id (change its availability)")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Product deactivated", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class)) }),
+					@Content(mediaType = "application/json", schema = @Schema(implementation = ProductDto.class)) }),
 			@ApiResponse(responseCode = "404", description = "Product not found", content = {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) }) })
 	@PutMapping(value = "/deactivate/{id}")
@@ -158,7 +179,7 @@ public class ProductController {
 	@Operation(summary = "Reactivate a product by its id (change its availability)")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Product reactivated", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponse.class)) }),
+					@Content(mediaType = "application/json", schema = @Schema(implementation = ProductDto.class)) }),
 			@ApiResponse(responseCode = "404", description = "Product not found", content = {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) }) })
 	@PutMapping(value = "/activate/{id}")

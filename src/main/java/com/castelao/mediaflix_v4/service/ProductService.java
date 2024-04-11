@@ -34,11 +34,11 @@ public class ProductService {
 		Page<Product> productPage = productRepository.findAllProductsPage(PageRequest.of(page, size));
 		return ProductMapper.toProductPageDto(productPage);
 	}
-	
+
 	public List<Product> getAllProducts() {
-	  return productRepository.findAll();
+		return productRepository.findAll();
 	}
-	
+
 	public ProductDto findById(Long id) {
 		Optional<Product> optionalProduct = productRepository.findById(id);
 		if (optionalProduct.isPresent()) {
@@ -190,7 +190,7 @@ public class ProductService {
 		Page<Product> productPage = productRepository.findByTitle(title, PageRequest.of(page, size));
 		return ProductMapper.toProductPageDto(productPage);
 	}
-	
+
 	/**
 	 * Busca los productos con un titulo similar
 	 * 
@@ -226,6 +226,15 @@ public class ProductService {
 	}
 
 	
+	public List<Product> findAllProductsZeroStock() {
+		return productRepository.findAllProductsZeroStock();
+	}
+
+	
+	public List<Product> findAllProductsStockBetween1And5() {
+		return productRepository.findAllProductsStockBetween1And5();
+	}
+
 //	public List<Product> getAllProducts() {
 //  return productRepository.findAll();
 //}

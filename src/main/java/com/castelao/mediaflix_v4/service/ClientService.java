@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.castelao.mediaflix_v4.dto.ClientDto;
@@ -42,6 +44,14 @@ public class ClientService {
 		ClientDto dtoCreated = ClientMapper.toDto(cliente);
 		return dtoCreated;
 	}
+	
+	
+	
+	// Método para obtener los últimos 20 clientes registrados
+    public List<Client> findLatest20Clients() {
+        Pageable pageable = PageRequest.of(0, 20); // Página 0, tamaño de página 20
+        return clientRepository.findLatestClients(pageable);
+    }
 
 	/**
 	 * Si el id del cliente recibido existe, actualiza el mismo con los campos

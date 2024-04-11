@@ -123,7 +123,7 @@ public class OrderService {
 	}
 
 	public List<OrderDto> findLatestOrdersWithDetails() {
-		Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "creationDate");
+		Pageable pageable = PageRequest.of(0, 20, Sort.Direction.DESC, "creationDate");
 		Page<Order> orderPage = orderRepository.findLatestOrders(pageable);
 		List<OrderDto> dtos = new ArrayList<>();
 
