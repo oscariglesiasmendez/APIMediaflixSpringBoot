@@ -1,5 +1,6 @@
 package com.castelao.mediaflix_v4.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -30,9 +31,16 @@ public class BookService {
 	private ModelMapper modelMapper = new ModelMapper();
 
 	public BookPageDto getAllBooks(int page, int size) {
-		Page<Book> books = bookRepository.findAll(PageRequest.of(page, size));
+		Page<Book> books = bookRepository.findAllBooksPage(PageRequest.of(page, size));
 		return BookMapper.toBookPageDto(books);
 	}
+	
+	
+	public List<Book> getAllBooksWithoutPagination() {
+		return bookRepository.findAll();
+	}
+
+	
 
 	public BookDto findById(Long id) {
 		Optional<Book> optionalBook = bookRepository.findById(id);
@@ -158,9 +166,7 @@ public class BookService {
 //        return BookMapper.toBookPageDto(bookPage);
 //    }
 
-//	public List<Book> getAllBooks() {
-//		return bookRepository.findAll();
-//	}
+	
 
 //    /**
 //	 * Busca libros que pertenezcan al autor recibido como argumento

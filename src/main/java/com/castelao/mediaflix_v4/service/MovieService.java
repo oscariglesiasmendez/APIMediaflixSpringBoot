@@ -39,6 +39,10 @@ public class MovieService {
 		return MovieMapper.toMoviePageDto(moviePage);
 	}
 	
+	public List<Movie> getAllMoviesWithoutPagination() {
+		return movieRepository.findAll();
+	}
+	
 	public MovieDto findById(Long id) {
 		Optional<Movie> optionalMovie = movieRepository.findById(id);
 		if (optionalMovie.isPresent()) {

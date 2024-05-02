@@ -1,5 +1,6 @@
 package com.castelao.mediaflix_v4.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -16,6 +17,7 @@ import com.castelao.mediaflix_v4.dto.GameDto;
 import com.castelao.mediaflix_v4.dto.pages.GamePageDto;
 import com.castelao.mediaflix_v4.entities.Book;
 import com.castelao.mediaflix_v4.entities.Game;
+import com.castelao.mediaflix_v4.entities.Movie;
 import com.castelao.mediaflix_v4.mapper.BookMapper;
 import com.castelao.mediaflix_v4.mapper.GameMapper;
 import com.castelao.mediaflix_v4.repository.GameRepository;
@@ -34,6 +36,12 @@ public class GameService {
 		Page<Game> gamePage = gameRepository.findAll(PageRequest.of(page, size));
 		return GameMapper.toGamePageDto(gamePage);
 	}
+	
+	
+	public List<Game> getAllGamesWithoutPagination() {
+		return gameRepository.findAll();
+	}
+	
 	
 	public GameDto findById(Long id) {
 		Optional<Game> optionalGame = gameRepository.findById(id);

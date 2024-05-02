@@ -1,5 +1,6 @@
 package com.castelao.mediaflix_v4.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.castelao.mediaflix_v4.dto.GameDto;
 import com.castelao.mediaflix_v4.dto.MovieDto;
 import com.castelao.mediaflix_v4.dto.pages.GamePageDto;
+import com.castelao.mediaflix_v4.entities.Game;
 import com.castelao.mediaflix_v4.service.GameService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,6 +44,15 @@ public class GameController {
 	public GamePageDto findAllPagination(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
 		return gameService.getAllGamesPage(page, size);
+	}
+	
+	
+	@Operation(summary = "Get all games without pagination")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Games found", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = GameDto.class)) }) })
+	@GetMapping("/all")
+	public List<Game> findAll() {
+		return gameService.getAllGamesWithoutPagination();
 	}
 	
 	

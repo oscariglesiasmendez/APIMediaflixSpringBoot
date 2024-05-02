@@ -1,5 +1,6 @@
 package com.castelao.mediaflix_v4.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.castelao.mediaflix_v4.dto.BookDto;
 import com.castelao.mediaflix_v4.dto.MovieDto;
 import com.castelao.mediaflix_v4.dto.pages.MoviePageDto;
+import com.castelao.mediaflix_v4.entities.Movie;
 import com.castelao.mediaflix_v4.service.MovieService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,6 +46,16 @@ public class MovieController {
 			@RequestParam(defaultValue = "10") int size) {
     	return movieService.getAllMovies(page, size);
 	}
+    
+    
+    @Operation(summary = "Get all movies without pagination")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Movies found", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = MovieDto.class)) }) })
+	@GetMapping("/all")
+	public List<Movie> findAllMoviesWithoutPagination() {
+    	return movieService.getAllMoviesWithoutPagination();
+	}
+    
     
     @Operation(summary = "Get a Movie by its Id")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Movie found", content = {

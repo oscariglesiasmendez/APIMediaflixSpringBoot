@@ -48,6 +48,14 @@ public class BookController {
 		return bookService.getAllBooks(page, size);
 	}
     
+    @Operation(summary = "Get all books without pagination")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Books found", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = BookDto.class)) }) })
+	@GetMapping("/all")
+	public List<Book> findAll() {
+		return bookService.getAllBooksWithoutPagination();
+	}
+    
     @Operation(summary = "Get a book by its Id")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Book found", content = {
 			@Content(mediaType = "application/json", schema = @Schema(implementation = BookDto.class)) }) })
