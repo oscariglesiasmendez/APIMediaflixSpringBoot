@@ -94,12 +94,14 @@ public class ClientService {
         }
     }
 
+	
 	/**
 	 * Busca clientes que tengan un nif similar a lo recibido como argumento
 	 * 
 	 * @param nif
 	 * @return List<ClienteDto>
 	 */
+	/*
 	public List<ClientDto> searchByNif(String nif) {
 		List<ClientDto> dtos = new ArrayList<ClientDto>();
 		List<Client> clientes = clientRepository.findByNifContaining(nif);
@@ -110,6 +112,7 @@ public class ClientService {
 
 		return dtos;
 	}
+	*/
 
 	/**
 	 * Busca clientes que tengan un nombre similar a lo recibido como argumento
@@ -144,6 +147,24 @@ public class ClientService {
 
 		return dtos;
 	}
+	
+	/**
+	 * Busca el cliente que tenga ese email
+	 * 
+	 * @param email
+	 * @return ClienteDto
+	 */
+	public ClientDto searchByEmail(String email) {
+		ClientDto dto = null;
+		Client cliente = clientRepository.findByEmail(email);
+
+		if (cliente != null) {
+			dto = ClientMapper.toDto(cliente);
+		}
+
+		return dto;
+	}
+	
 
 	/**
 	 * Busca clientes que estén dados de alta actualmente

@@ -20,8 +20,8 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 	@Query("SELECT c FROM Client c WHERE c.firstName LIKE %:name%")
     List<Client> findByNombreContaining(@Param("name") String name);
 
-    @Query("SELECT c FROM Client c WHERE c.nif LIKE %:nif%")
-    List<Client> findByNifContaining(@Param("nif") String nif);
+    //@Query("SELECT c FROM Client c WHERE c.nif LIKE %:nif%")
+    //List<Client> findByNifContaining(@Param("nif") String nif);
 
     @Query("SELECT c FROM Client c WHERE c.creationDate >= :date")
     List<Client> findByFechaAltaGreaterThan(@Param("date") Date date);
@@ -51,5 +51,8 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     
     @Query("SELECT c FROM Client c ORDER BY c.creationDate DESC")
     List<Client> findLatestClients(Pageable pageable);
+    
+    @Query("SELECT c FROM Client c WHERE c.email = :email")
+    Client findByEmail(@Param("email") String email);
 
 }

@@ -101,8 +101,9 @@ public class ClientRestController {
 			return responseNotFound(clientId);
 		}
 	}
+
 	
-	
+	/*
 	@Operation(summary = "Get all clients with %nif%")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Clients found", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ClientDto.class))) }) })
@@ -111,6 +112,7 @@ public class ClientRestController {
 		List<ClientDto> dtos = clienteService.searchByNif(nif);
 		return dtos;
 	}
+	*/
 	
 	
 	@Operation(summary = "Get all clients with %name%")
@@ -130,6 +132,18 @@ public class ClientRestController {
 	public List<ClientDto> searchByDate(@RequestParam(name = "date") Date date) {
 		List<ClientDto> dtos = clienteService.searchByDate(date);
 		return dtos;
+	}
+	
+	@Operation(summary = "Get the cliente with this %email%")
+	@ApiResponses(value = {
+	        @ApiResponse(responseCode = "200", description = "Client found", content = {
+	                @Content(mediaType = "application/json", schema = @Schema(implementation = ClientDto.class)) }),
+	        @ApiResponse(responseCode = "404", description = "Client not found", content = {
+	                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) }) })
+	@GetMapping(value = "email")
+	public ClientDto searchByEmail(@RequestParam(name = "email") String email) {
+		ClientDto clientDto = clienteService.searchByEmail(email);
+		return clientDto;
 	}
 	
 	
