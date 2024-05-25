@@ -140,11 +140,23 @@ public class ClientRestController {
 	                @Content(mediaType = "application/json", schema = @Schema(implementation = ClientDto.class)) }),
 	        @ApiResponse(responseCode = "404", description = "Client not found", content = {
 	                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) }) })
-	@GetMapping(value = "email")
+	@GetMapping(value = "/email")
 	public ClientDto searchByEmail(@RequestParam(name = "email") String email) {
-		ClientDto clientDto = clienteService.searchByEmail(email);
-		return clientDto;
+		return clienteService.searchByEmail(email);
 	}
+	
+	@GetMapping("/email/{email}")
+    public ResponseEntity<?> getClientByEmail(@PathVariable String email) {
+        // Aquí deberías implementar la lógica para buscar el cliente por el correo electrónico
+        ClientDto client = clienteService.searchByEmail(email);
+        
+        if (client != null) {
+            return ResponseEntity.ok(client);
+        } else {
+            ErrorResponse errorResponse = new ErrorResponse("Client not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
+    }
 	
 	
 	@Operation(summary = "Get all available clients")

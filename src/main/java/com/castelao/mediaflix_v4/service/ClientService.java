@@ -12,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.castelao.mediaflix_v4.dto.ClientDto;
 import com.castelao.mediaflix_v4.entities.Client;
@@ -155,14 +158,13 @@ public class ClientService {
 	 * @return ClienteDto
 	 */
 	public ClientDto searchByEmail(String email) {
-		ClientDto dto = null;
 		Client cliente = clientRepository.findByEmail(email);
 
-		if (cliente != null) {
-			dto = ClientMapper.toDto(cliente);
+		if (cliente == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
 
-		return dto;
+		return ClientMapper.toDto(cliente);
 	}
 	
 

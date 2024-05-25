@@ -21,7 +21,6 @@ public class ClientDto {
 
 	private Long clientId;
 
-	@NotEmpty
 	private String firstName;
 
 	private String lastName;
