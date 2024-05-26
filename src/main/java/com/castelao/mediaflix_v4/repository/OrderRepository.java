@@ -29,4 +29,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Query("SELECT o FROM Order o WHERE o.creationDate = :date")
 	List<Order> findByDate(@Param("date") LocalDateTime date);
 
+	@Query("SELECT o FROM Order o WHERE o.client.clientId = :clientId")
+    List<Order> findByClientId(@Param("clientId") Long clientId);
+	
 }

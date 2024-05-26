@@ -70,6 +70,16 @@ public class OrderService {
 			return null;
 		}
 	}
+	
+	
+	/**
+	 * Obtiene todas las orders de ese cliente
+	 * @param clientId
+	 * @return List<Order>
+	 */
+	public List<Order> getOrdersByClientId(Long clientId) {
+        return orderRepository.findByClientId(clientId);
+    }
 
 	/**
 	 * Si el id del order recibido existe, actualiza el mismo con los campos

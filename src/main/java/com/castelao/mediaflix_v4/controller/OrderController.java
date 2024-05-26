@@ -227,7 +227,16 @@ public class OrderController {
 			return responseNotFound(orderId);
 		}
 	}
+	
+	@Operation(summary = "Get all orders by clientId")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Orders found", content = {
+			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = OrderDto.class))) }) })
+	@GetMapping("/client/{clientId}")
+    public List<Order> getOrdersByClientId(@PathVariable Long clientId) {
+        return orderService.getOrdersByClientId(clientId);
+    }
 
+	
 	@Operation(summary = "Get all orders with %date%")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Orders found", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = OrderDto.class))) }) })
