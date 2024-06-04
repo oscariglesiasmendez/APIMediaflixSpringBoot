@@ -71,22 +71,19 @@ public class OrderController {
 			@Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class)) }) })
 	@GetMapping
 	public List<OrderDto> findAll() {
-		List<Order> orders = orderService.getAllOrders();
+	    List<Order> orders = orderService.getAllOrders();
 
-		List<OrderDetail> orderDetails;
-
-		List<OrderDto> dtos = OrderMapper.toDto(orders);
-
-		for (Order o : orders) {
-			orderDetails = orderDetailRepository.findByOrderId(o.getOrderId());
-
-			for (OrderDto dto : dtos) {
-				dto.setDetails(OrderDetailMapper.toDtoList(orderDetails));
-			}
-
-		}
-
-		return dtos;
+	    List<OrderDto> dtos = OrderMapper.toDto(orders);
+	    
+	    //Recorro asi, porque si no siempre queda la última cantidad en todos
+	    for (int i = 0; i < orders.size(); i++) {
+	        Order o = orders.get(i);
+	        List<OrderDetail> orderDetails = orderDetailRepository.findByOrderId(o.getOrderId());
+	        dtos.get(i).setDetails(OrderDetailMapper.toDtoList(orderDetails));
+	    }
+	    
+	    return dtos;
+	    
 	}
 
 	@Operation(summary = "Get the latest orders")
