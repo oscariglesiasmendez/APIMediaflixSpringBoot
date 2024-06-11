@@ -1,6 +1,5 @@
 package com.castelao.mediaflix_v4.entities;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 
 import jakarta.persistence.Column;
