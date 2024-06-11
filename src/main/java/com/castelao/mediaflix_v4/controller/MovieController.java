@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.castelao.mediaflix_v4.dto.BookDto;
 import com.castelao.mediaflix_v4.dto.MovieDto;
+import com.castelao.mediaflix_v4.dto.ProductDto;
 import com.castelao.mediaflix_v4.dto.pages.MoviePageDto;
 import com.castelao.mediaflix_v4.entities.Movie;
+import com.castelao.mediaflix_v4.entities.Product;
 import com.castelao.mediaflix_v4.service.MovieService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -68,6 +70,14 @@ public class MovieController {
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+	}
+    
+    @Operation(summary = "Get all movies by %title%")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Movies found", content = {
+			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ProductDto.class))) }) })
+	@GetMapping(value = "/title")
+	public List<Movie> searchByTitleWithoutPagination(@RequestParam(name = "title") String title) {
+		return movieService.searchByTitle(title);
 	}
 	
     
@@ -119,7 +129,7 @@ public class MovieController {
     @Operation(summary = "Get all films with %title%")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Films found", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = MovieDto.class))) }) })
-	@GetMapping(value = "/title")
+	@GetMapping(value = "/title/pagination")
 	public MoviePageDto searchByTitle(@RequestParam(name = "title") String title,
 			@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "size", defaultValue = "10") int size) {

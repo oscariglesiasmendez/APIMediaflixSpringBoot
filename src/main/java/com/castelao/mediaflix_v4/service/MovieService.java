@@ -150,6 +150,18 @@ public class MovieService {
 		return MovieMapper.toMoviePageDto(moviePage);
 	}
 	
+	/**
+	 * Busca las películas con un titulo similar
+	 * 
+	 * @param title
+	 * @return
+	 */
+	public List<Movie> searchByTitle(String title) {
+		List<Movie> movies = movieRepository.findByTitleWithoutPagination(title);
+		
+		return movies;
+	}
+	
 	
 	/**
 	 * Busca películas que tengan una duración mayor a la que recibe como argumento

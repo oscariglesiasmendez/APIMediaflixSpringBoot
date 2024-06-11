@@ -70,6 +70,19 @@ public class GameService {
 	
 	
 	/**
+	 * Busca los juegos con un titulo similar
+	 * 
+	 * @param title
+	 * @return
+	 */
+	public List<Game> searchByTitle(String title) {
+		List<Game> games = gameRepository.findByTitleWithoutPagination(title);
+		
+		return games;
+	}
+	
+	
+	/**
 	 * Si el id del videojuego recibido existe, actualiza el mismo con los campos
 	 * recibidos en videojuegoDto
 	 * 

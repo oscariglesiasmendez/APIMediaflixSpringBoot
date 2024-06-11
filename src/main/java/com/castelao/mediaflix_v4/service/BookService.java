@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.castelao.mediaflix_v4.dto.BookDto;
 import com.castelao.mediaflix_v4.dto.pages.BookPageDto;
 import com.castelao.mediaflix_v4.entities.Book;
+import com.castelao.mediaflix_v4.entities.Game;
 import com.castelao.mediaflix_v4.entities.Product;
 import com.castelao.mediaflix_v4.mapper.BookMapper;
 import com.castelao.mediaflix_v4.mapper.ProductMapper;
@@ -65,6 +66,20 @@ public class BookService {
 		BookDto dtoCreated = BookMapper.toDto(libro);
 		return dtoCreated;
 	}
+	
+	
+	/**
+	 * Busca los libros con un titulo similar
+	 * 
+	 * @param title
+	 * @return
+	 */
+	public List<Book> searchByTitle(String title) {
+		List<Book> books = bookRepository.findByTitleWithoutPagination(title);
+		
+		return books;
+	}
+	
 
 	/**
 	 * Si el id del libro recibido existe, actualiza el mismo con los campos

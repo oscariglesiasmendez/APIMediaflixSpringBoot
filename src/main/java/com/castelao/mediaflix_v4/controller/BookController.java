@@ -20,6 +20,7 @@ import com.castelao.mediaflix_v4.dto.ProductDto;
 import com.castelao.mediaflix_v4.dto.pages.BookPageDto;
 import com.castelao.mediaflix_v4.dto.pages.ProductPageDto;
 import com.castelao.mediaflix_v4.entities.Book;
+import com.castelao.mediaflix_v4.entities.Game;
 import com.castelao.mediaflix_v4.mapper.BookMapper;
 import com.castelao.mediaflix_v4.service.BookService;
 
@@ -67,6 +68,14 @@ public class BookController {
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+	}
+    
+    @Operation(summary = "Get all books by %title%")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Books found", content = {
+			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ProductDto.class))) }) })
+	@GetMapping(value = "/title")
+	public List<Book> searchByTitleWithoutPagination(@RequestParam(name = "title") String title) {
+		return bookService.searchByTitle(title);
 	}
     
     
@@ -140,7 +149,7 @@ public class BookController {
     @Operation(summary = "Get all books with %title%")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Books found", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = BookDto.class))) }) })
-	@GetMapping(value = "/title")
+	@GetMapping(value = "/title/pagination")
 	public BookPageDto searchByTitle(@RequestParam(name = "title") String title,
 			@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "size", defaultValue = "10") int size) {

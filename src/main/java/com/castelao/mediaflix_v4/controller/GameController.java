@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.castelao.mediaflix_v4.dto.GameDto;
 import com.castelao.mediaflix_v4.dto.MovieDto;
+import com.castelao.mediaflix_v4.dto.ProductDto;
 import com.castelao.mediaflix_v4.dto.pages.GamePageDto;
 import com.castelao.mediaflix_v4.entities.Game;
+import com.castelao.mediaflix_v4.entities.Movie;
 import com.castelao.mediaflix_v4.service.GameService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -103,11 +105,19 @@ public class GameController {
 		}
 	}
 	
+	@Operation(summary = "Get all games by %title%")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Games found", content = {
+			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ProductDto.class))) }) })
+	@GetMapping(value = "/title")
+	public List<Game> searchByTitleWithoutPagination(@RequestParam(name = "title") String title) {
+		return gameService.searchByTitle(title);
+	}
+	
 	
 	@Operation(summary = "Get all games with %title%")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Games found", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = GameDto.class))) }) })
-	@GetMapping(value = "/title")
+	@GetMapping(value = "/title/pagination")
 	public GamePageDto searchByTitle(@RequestParam(name = "title") String title,
 			@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "size", defaultValue = "10") int size) {
