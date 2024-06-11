@@ -32,4 +32,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Query("SELECT o FROM Order o WHERE o.client.clientId = :clientId")
     List<Order> findByClientId(@Param("clientId") Long clientId);
 	
+	@Query("SELECT o FROM Order o WHERE o.client.email = :email")
+    List<Order> findByClientEmail(@Param("email") String email);
+	
 }

@@ -71,19 +71,19 @@ public class OrderController {
 			@Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class)) }) })
 	@GetMapping
 	public List<OrderDto> findAll() {
-	    List<Order> orders = orderService.getAllOrders();
+		List<Order> orders = orderService.getAllOrders();
 
-	    List<OrderDto> dtos = OrderMapper.toDto(orders);
-	    
-	    //Recorro asi, porque si no siempre queda la última cantidad en todos
-	    for (int i = 0; i < orders.size(); i++) {
-	        Order o = orders.get(i);
-	        List<OrderDetail> orderDetails = orderDetailRepository.findByOrderId(o.getOrderId());
-	        dtos.get(i).setDetails(OrderDetailMapper.toDtoList(orderDetails));
-	    }
-	    
-	    return dtos;
-	    
+		List<OrderDto> dtos = OrderMapper.toDto(orders);
+
+		// Recorro asi, porque si no siempre queda la última cantidad en todos
+		for (int i = 0; i < orders.size(); i++) {
+			Order o = orders.get(i);
+			List<OrderDetail> orderDetails = orderDetailRepository.findByOrderId(o.getOrderId());
+			dtos.get(i).setDetails(OrderDetailMapper.toDtoList(orderDetails));
+		}
+
+		return dtos;
+
 	}
 
 	@Operation(summary = "Get the latest orders")
@@ -224,16 +224,15 @@ public class OrderController {
 			return responseNotFound(orderId);
 		}
 	}
-	
+
 	@Operation(summary = "Get all orders by clientId")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Orders found", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = OrderDto.class))) }) })
 	@GetMapping("/client/{clientId}")
-    public List<Order> getOrdersByClientId(@PathVariable Long clientId) {
-        return orderService.getOrdersByClientId(clientId);
-    }
+	public List<Order> getOrdersByClientId(@PathVariable Long clientId) {
+		return orderService.getOrdersByClientId(clientId);
+	}
 
-	
 	@Operation(summary = "Get all orders with %date%")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Orders found", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = OrderDto.class))) }) })
@@ -253,20 +252,30 @@ public class OrderController {
 		return dtos;
 	}
 	
-	
+	@Operation(summary = "Get all orders by client email")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Orders found", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class))
+        }),
+        @ApiResponse(responseCode = "404", description = "Client not found", content = @Content),
+        @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
+    })
+    @GetMapping("/client-email")
+    public List<OrderDto> findOrdersByClientEmail(@RequestParam(name = "email") String email) {
+        List<Order> orders = orderService.getOrdersByClientEmail(email);
+        List<OrderDto> dtos = OrderMapper.toDto(orders);
+        return dtos;
+    }
+
 	@Operation(summary = "Get all orders by date")
-	  @ApiResponses(value = {
-	      @ApiResponse(responseCode = "200", description = "Orders found", content = {
-	          @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class))
-	      })
-	  })
-	  @GetMapping("/date")
-	  public List<OrderDto> findOrdersByDate(@RequestParam(name = "date") LocalDateTime date) {
-	    List<Order> orders = orderService.findOrdersByDate(date);
-	    List<OrderDto> dtos = OrderMapper.toDto(orders);
-	    return dtos;
-	  }
-	
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Orders found", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class)) }) })
+	@GetMapping("/date")
+	public List<OrderDto> findOrdersByDate(@RequestParam(name = "date") LocalDateTime date) {
+		List<Order> orders = orderService.findOrdersByDate(date);
+		List<OrderDto> dtos = OrderMapper.toDto(orders);
+		return dtos;
+	}
 
 	@Operation(summary = "Get all orders with %minPrice%")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Orders found", content = {
