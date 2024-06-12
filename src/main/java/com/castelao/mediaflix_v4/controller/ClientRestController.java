@@ -76,7 +76,7 @@ public class ClientRestController {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)) }) })
 	@PostMapping("/add")
 	public ResponseEntity<ClientDto> createClient(@Valid @RequestBody ClientDto clienteDto) {
-		System.out.println(clienteDto);
+		//System.out.println(clienteDto);
 		ClientDto dtoWithId = clienteService.crearCliente(clienteDto);
 		return new ResponseEntity<>(dtoWithId, HttpStatus.CREATED);
 	}

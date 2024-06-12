@@ -1,5 +1,5 @@
 package com.castelao.mediaflix_v4;
 
-public class ProductControllerTest {
+public class GameService {
 
 }
