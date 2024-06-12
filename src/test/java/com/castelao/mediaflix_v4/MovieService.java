@@ -1,5 +1,0 @@
-package com.castelao.mediaflix_v4;
-
-public class MovieService {
-
-}
